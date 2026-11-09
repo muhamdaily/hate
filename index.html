@@ -1,0 +1,1485 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#09090b">
+    <script>try { var t = localStorage.getItem('ht_theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t) } catch (e) { }</script>
+    <title>Web HT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ===== Token ala shadcn/ui (zinc) ===== */
+        :root {
+            --background: #09090b;
+            --foreground: #fafafa;
+            --card: #0c0c0f;
+            --border: #27272a;
+            --input: #27272a;
+            --muted: #18181b;
+            --muted-foreground: #a1a1aa;
+            --accent: #27272a;
+            --primary: #fafafa;
+            --primary-foreground: #18181b;
+            --destructive: #dc2626;
+            --destructive-foreground: #fafafa;
+            --success: #22c55e;
+            --ring: #71717a;
+            --popover: #0c0c0f;
+            --err: #ef4444;
+            --thumb: #fafafa;
+            --thumb-shadow: none;
+            color-scheme: dark;
+            --radius: 10px;
+            --font: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            --mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        }
+
+        :root[data-theme="light"] {
+            --background: #ffffff;
+            --foreground: #09090b;
+            --card: #ffffff;
+            --popover: #ffffff;
+            --border: #e4e4e7;
+            --input: #e4e4e7;
+            --muted: #f4f4f5;
+            --muted-foreground: #71717a;
+            --accent: #f4f4f5;
+            --primary: #18181b;
+            --primary-foreground: #fafafa;
+            --ring: #a1a1aa;
+            --err: #dc2626;
+            --thumb: #ffffff;
+            --thumb-shadow: 0 1px 2px rgba(0, 0, 0, .25);
+            color-scheme: light;
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root:not([data-theme="dark"]) {
+                --background: #ffffff;
+                --foreground: #09090b;
+                --card: #ffffff;
+                --popover: #ffffff;
+                --border: #e4e4e7;
+                --input: #e4e4e7;
+                --muted: #f4f4f5;
+                --muted-foreground: #71717a;
+                --accent: #f4f4f5;
+                --primary: #18181b;
+                --primary-foreground: #fafafa;
+                --ring: #a1a1aa;
+                --err: #dc2626;
+                --thumb: #ffffff;
+                --thumb-shadow: 0 1px 2px rgba(0, 0, 0, .25);
+                color-scheme: light;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+            background: var(--background);
+            color: var(--foreground);
+            font-family: var(--font);
+            font-size: 14px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased
+        }
+
+        body {
+            display: flex;
+            justify-content: center
+        }
+
+        .app {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100dvh;
+            padding: 24px 16px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px
+        }
+
+        .hidden {
+            display: none !important
+        }
+
+        /* ===== Ikon (Lucide) ===== */
+        .ic {
+            width: 16px;
+            height: 16px;
+            flex: none;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round
+        }
+
+        /* ===== Header ===== */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 4px
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            display: grid;
+            place-items: center
+        }
+
+        .brand-icon .ic {
+            width: 20px;
+            height: 20px
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: -.01em;
+            line-height: 1.2
+        }
+
+        .brand p {
+            margin: 0;
+            font-size: 12px;
+            color: var(--muted-foreground)
+        }
+
+        .brand-text {
+            min-width: 0
+        }
+
+        .brand-text p {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        /* ===== Tombol kecil (header, kartu) ===== */
+        .sbtn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 36px;
+            padding: 0 12px;
+            border-radius: 8px;
+            border: 1px solid var(--input);
+            background: transparent;
+            color: var(--foreground);
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            outline: none;
+            transition: background .15s, box-shadow .15s
+        }
+
+        .sbtn:hover {
+            background: var(--accent)
+        }
+
+        .sbtn:focus-visible {
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 45%, transparent)
+        }
+
+        .sbtn.icon {
+            width: 36px;
+            padding: 0
+        }
+
+        .sbtn.sm {
+            height: 32px;
+            padding: 0 10px
+        }
+
+        .sbtn.icon.sm {
+            width: 32px;
+            padding: 0
+        }
+
+        .sbtn .ic {
+            color: currentColor
+        }
+
+        /* ===== Dropdown ===== */
+        .dropdown {
+            position: relative
+        }
+
+        .menu {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 6px);
+            z-index: 50;
+            min-width: 196px;
+            padding: 4px;
+            background: var(--popover);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+            animation: menuIn .12s ease-out
+        }
+
+        @keyframes menuIn {
+            from {
+                opacity: 0;
+                transform: translateY(-4px) scale(.98)
+            }
+        }
+
+        .menu-label {
+            padding: 6px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted-foreground)
+        }
+
+        .menu-sep {
+            height: 1px;
+            background: var(--border);
+            margin: 4px -4px
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 8px;
+            border: 0;
+            border-radius: 6px;
+            background: transparent;
+            color: var(--foreground);
+            font-size: 13px;
+            text-align: left;
+            outline: none
+        }
+
+        .menu-item:hover,
+        .menu-item:focus-visible {
+            background: var(--accent)
+        }
+
+        .menu-item .ic {
+            color: var(--muted-foreground)
+        }
+
+        .menu-item .check {
+            margin-left: auto;
+            color: var(--foreground)
+        }
+
+        .invisible {
+            visibility: hidden
+        }
+
+        /* ===== Card ===== */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: calc(var(--radius) + 2px);
+            padding: 20px
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -.01em;
+            line-height: 1.3
+        }
+
+        .card-desc {
+            margin: 4px 0 0;
+            font-size: 13px;
+            color: var(--muted-foreground)
+        }
+
+        .card-head {
+            margin-bottom: 16px
+        }
+
+        .card-head-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px
+        }
+
+        .card-head-row .card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .card-head-row .card-title .ic {
+            color: var(--muted-foreground)
+        }
+
+        /* ===== Form ===== */
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 1;
+            margin-bottom: 8px
+        }
+
+        .field+.field {
+            margin-top: 16px
+        }
+
+        .input-wrap {
+            position: relative
+        }
+
+        .input-wrap .ic {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted-foreground);
+            pointer-events: none
+        }
+
+        input[type=text] {
+            width: 100%;
+            height: 40px;
+            padding: 0 12px 0 36px;
+            border-radius: 8px;
+            border: 1px solid var(--input);
+            background: transparent;
+            color: var(--foreground);
+            font: inherit;
+            font-size: 16px;
+            outline: none;
+            transition: box-shadow .15s, border-color .15s
+        }
+
+        input[type=text]::placeholder {
+            color: var(--muted-foreground);
+            opacity: .7
+        }
+
+        input[type=text]:focus-visible {
+            border-color: var(--ring);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 35%, transparent)
+        }
+
+        /* ===== Button ===== */
+        button {
+            font: inherit;
+            cursor: pointer
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            height: 40px;
+            padding: 0 16px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            font-size: 14px;
+            font-weight: 500;
+            outline: none;
+            transition: opacity .15s, background .15s, box-shadow .15s
+        }
+
+        .btn:hover {
+            opacity: .9
+        }
+
+        .btn:focus-visible {
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 45%, transparent)
+        }
+
+        .btn:active {
+            transform: translateY(1px)
+        }
+
+        .btn.ghost {
+            background: transparent;
+            border-color: var(--input);
+            color: var(--foreground)
+        }
+
+        .btn.ghost:hover {
+            opacity: 1;
+            background: var(--accent)
+        }
+
+        /* ===== Alert ===== */
+        .alert {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 13px;
+            line-height: 1.5
+        }
+
+        .alert .ic {
+            margin-top: 2px
+        }
+
+        .err {
+            margin-top: 16px;
+            border-color: color-mix(in srgb, var(--destructive) 50%, transparent);
+            color: var(--err)
+        }
+
+        .hint {
+            margin: 16px 0 0;
+            color: var(--muted-foreground);
+            background: var(--muted)
+        }
+
+        /* ===== Status ===== */
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 16px
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            min-width: 0
+        }
+
+        .dot {
+            position: relative;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--muted-foreground);
+            flex: none
+        }
+
+        .dot.on {
+            background: var(--success)
+        }
+
+        .dot.on::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 1px solid var(--success);
+            animation: ping 1.8s ease-out infinite
+        }
+
+        @keyframes ping {
+            from {
+                transform: scale(1);
+                opacity: .8
+            }
+
+            to {
+                transform: scale(2.6);
+                opacity: 0
+            }
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            height: 24px;
+            padding: 0 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap
+        }
+
+        #statusTxt {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .dot.me {
+            background: var(--destructive)
+        }
+
+        .dot.me::after {
+            border-color: var(--destructive)
+        }
+
+        #radio {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px
+        }
+
+        .head-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        /* ===== Push to talk ===== */
+        .ptt-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            margin-top: auto;
+            padding: 20px 0 8px
+        }
+
+        #ptt {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--muted);
+            color: var(--foreground);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            outline: none;
+            transition: transform .1s, background .15s, border-color .15s, box-shadow .15s
+        }
+
+        #ptt .ic {
+            width: 40px;
+            height: 40px;
+            stroke-width: 1.75
+        }
+
+        #ptt .ic-talk {
+            display: none
+        }
+
+        #pttTxt {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: -.01em
+        }
+
+        #ptt:focus-visible {
+            box-shadow: 0 0 0 3px var(--background), 0 0 0 5px var(--ring)
+        }
+
+        #ptt.rx {
+            border-color: var(--success);
+            box-shadow: 0 0 0 4px var(--background), 0 0 0 6px var(--success)
+        }
+
+        #ptt.talking {
+            background: var(--destructive);
+            border-color: var(--destructive);
+            color: var(--destructive-foreground);
+            transform: scale(.97);
+            animation: talk 1.4s ease-out infinite
+        }
+
+        #ptt.talking .ic-idle {
+            display: none
+        }
+
+        #ptt.talking .ic-talk {
+            display: block
+        }
+
+        @keyframes talk {
+            from {
+                box-shadow: 0 0 0 0 color-mix(in srgb, var(--destructive) 55%, transparent)
+            }
+
+            to {
+                box-shadow: 0 0 0 28px color-mix(in srgb, var(--destructive) 0%, transparent)
+            }
+        }
+
+        .kbd-hint {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--muted-foreground)
+        }
+
+        kbd {
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            border-bottom-width: 2px;
+            background: var(--muted);
+            color: var(--foreground)
+        }
+
+        /* ===== Anggota ===== */
+        .count {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted-foreground);
+            background: var(--muted);
+            border-radius: 999px;
+            padding: 2px 8px
+        }
+
+        .peers {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        .peers:empty {
+            display: none
+        }
+
+        .peers li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px 8px 8px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            font-weight: 500;
+            transition: border-color .15s
+        }
+
+        .peers li.speaking {
+            border-color: var(--success)
+        }
+
+        .peers .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: grid;
+            place-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            flex: none
+        }
+
+        .peers .name {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .peers .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--success);
+            border: 1px solid color-mix(in srgb, var(--success) 40%, transparent);
+            border-radius: 999px;
+            padding: 2px 8px
+        }
+
+        .peers .tag .ic {
+            width: 12px;
+            height: 12px
+        }
+
+        .empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-align: center;
+            color: var(--muted-foreground);
+            font-size: 13px;
+            padding: 20px 12px;
+            border: 1px dashed var(--border);
+            border-radius: 8px
+        }
+
+        .empty .ic {
+            width: 20px;
+            height: 20px
+        }
+
+        /* ===== Pengaturan ===== */
+        .setting+.setting {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border)
+        }
+
+        .vol-row {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .vol-row .ic {
+            color: var(--muted-foreground)
+        }
+
+        input[type=range] {
+            flex: 1;
+            width: 100%;
+            height: 20px;
+            margin: 0;
+            accent-color: var(--primary);
+            cursor: pointer
+        }
+
+        .switch-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px
+        }
+
+        .switch-row label {
+            margin: 0 0 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer
+        }
+
+        .switch-row p {
+            margin: 0;
+            font-size: 12px;
+            color: var(--muted-foreground);
+            line-height: 1.5
+        }
+
+        input[type=checkbox] {
+            appearance: none;
+            -webkit-appearance: none;
+            flex: none;
+            position: relative;
+            width: 40px;
+            height: 22px;
+            margin: 0;
+            border-radius: 999px;
+            background: var(--input);
+            cursor: pointer;
+            outline: none;
+            transition: background .15s
+        }
+
+        input[type=checkbox]::after {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--thumb);
+            box-shadow: var(--thumb-shadow);
+            transition: transform .15s
+        }
+
+        input[type=checkbox]:checked {
+            background: var(--primary)
+        }
+
+        input[type=checkbox]:checked::after {
+            transform: translateX(18px);
+            background: var(--primary-foreground);
+            box-shadow: none
+        }
+
+        input[type=checkbox]:focus-visible {
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 45%, transparent)
+        }
+
+        .sr {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0)
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sprite ikon Lucide -->
+    <svg class="sr" aria-hidden="true">
+        <defs>
+            <symbol id="i-radio" viewBox="0 0 24 24">
+                <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9" />
+                <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5" />
+                <circle cx="12" cy="12" r="2" />
+                <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5" />
+                <path d="M19.1 4.9C23 8.8 23 15.1 19.1 19" />
+            </symbol>
+            <symbol id="i-mic" viewBox="0 0 24 24">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                <line x1="12" x2="12" y1="19" y2="22" />
+            </symbol>
+            <symbol id="i-audio-lines" viewBox="0 0 24 24">
+                <path d="M2 10v3" />
+                <path d="M6 6v11" />
+                <path d="M10 3v18" />
+                <path d="M14 8v7" />
+                <path d="M18 5v13" />
+                <path d="M22 10v3" />
+            </symbol>
+            <symbol id="i-log-in" viewBox="0 0 24 24">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                <polyline points="10 17 15 12 10 7" />
+                <line x1="15" x2="3" y1="12" y2="12" />
+            </symbol>
+            <symbol id="i-log-out" viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" x2="9" y1="12" y2="12" />
+            </symbol>
+            <symbol id="i-user" viewBox="0 0 24 24">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+            </symbol>
+            <symbol id="i-users" viewBox="0 0 24 24">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </symbol>
+            <symbol id="i-hash" viewBox="0 0 24 24">
+                <line x1="4" x2="20" y1="9" y2="9" />
+                <line x1="4" x2="20" y1="15" y2="15" />
+                <line x1="10" x2="8" y1="3" y2="21" />
+                <line x1="16" x2="14" y1="3" y2="21" />
+            </symbol>
+            <symbol id="i-volume-2" viewBox="0 0 24 24">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            </symbol>
+            <symbol id="i-lock" viewBox="0 0 24 24">
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </symbol>
+            <symbol id="i-circle-alert" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" x2="12" y1="8" y2="12" />
+                <line x1="12" x2="12.01" y1="16" y2="16" />
+            </symbol>
+            <symbol id="i-info" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
+            </symbol>
+            <symbol id="i-sun" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2" />
+                <path d="M12 20v2" />
+                <path d="m4.93 4.93 1.41 1.41" />
+                <path d="m17.66 17.66 1.41 1.41" />
+                <path d="M2 12h2" />
+                <path d="M20 12h2" />
+                <path d="m6.34 17.66-1.41 1.41" />
+                <path d="m19.07 4.93-1.41 1.41" />
+            </symbol>
+            <symbol id="i-moon" viewBox="0 0 24 24">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+            </symbol>
+            <symbol id="i-laptop" viewBox="0 0 24 24">
+                <path
+                    d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16" />
+            </symbol>
+            <symbol id="i-check" viewBox="0 0 24 24">
+                <path d="M20 6 9 17l-5-5" />
+            </symbol>
+            <symbol id="i-share-2" viewBox="0 0 24 24">
+                <circle cx="18" cy="5" r="3" />
+                <circle cx="6" cy="12" r="3" />
+                <circle cx="18" cy="19" r="3" />
+                <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
+                <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />
+            </symbol>
+            <symbol id="i-link" viewBox="0 0 24 24">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+            </symbol>
+            <symbol id="i-mail" viewBox="0 0 24 24">
+                <rect width="20" height="16" x="2" y="4" rx="2" />
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+            </symbol>
+            <symbol id="i-send" viewBox="0 0 24 24">
+                <path d="m22 2-7 20-4-9-9-4Z" />
+                <path d="M22 2 11 13" />
+            </symbol>
+            <symbol id="i-message-circle" viewBox="0 0 24 24">
+                <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+            </symbol>
+            <symbol id="i-volume-x" viewBox="0 0 24 24">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <line x1="22" x2="16" y1="9" y2="15" />
+                <line x1="16" x2="22" y1="9" y2="15" />
+            </symbol>
+            <symbol id="i-volume-1" viewBox="0 0 24 24">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+            </symbol>
+        </defs>
+    </svg>
+
+    <div class="app">
+        <header class="brand">
+            <div class="brand-icon"><svg class="ic">
+                    <use href="#i-radio" />
+                </svg></div>
+            <div class="brand-text">
+                <h1>Web HT</h1>
+                <p>Walkie-talkie di browser</p>
+            </div>
+            <div class="actions">
+                <button id="leaveBtn" type="button" class="sbtn hidden"><svg class="ic">
+                        <use href="#i-log-out" />
+                    </svg>Keluar</button>
+                <div class="dropdown">
+                    <button id="themeBtn" type="button" class="sbtn icon" aria-label="Ganti tema" aria-haspopup="menu"
+                        aria-expanded="false"><svg class="ic">
+                            <use id="themeIcon" href="#i-moon" />
+                        </svg></button>
+                    <div class="menu hidden" role="menu">
+                        <button type="button" class="menu-item" role="menuitem" data-theme-opt="light"><svg class="ic">
+                                <use href="#i-sun" />
+                            </svg>Terang<svg class="ic check invisible">
+                                <use href="#i-check" />
+                            </svg></button>
+                        <button type="button" class="menu-item" role="menuitem" data-theme-opt="dark"><svg class="ic">
+                                <use href="#i-moon" />
+                            </svg>Gelap<svg class="ic check invisible">
+                                <use href="#i-check" />
+                            </svg></button>
+                        <button type="button" class="menu-item" role="menuitem" data-theme-opt="system"><svg class="ic">
+                                <use href="#i-laptop" />
+                            </svg>Sistem<svg class="ic check invisible">
+                                <use href="#i-check" />
+                            </svg></button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Layar masuk -->
+        <section id="join" class="card">
+            <div class="card-head">
+                <h2 class="card-title">Masuk channel</h2>
+                <p class="card-desc">Isi kode channel untuk mulai berbicara dengan teman.</p>
+            </div>
+
+            <div class="field">
+                <label for="name">Nama panggilan <span
+                        style="color:var(--muted-foreground);font-weight:400">(opsional)</span></label>
+                <div class="input-wrap">
+                    <svg class="ic">
+                        <use href="#i-user" />
+                    </svg>
+                    <input id="name" type="text" maxlength="20" placeholder="mis. Budi" autocomplete="off">
+                </div>
+            </div>
+            <div class="field">
+                <label for="chan">Kode channel</label>
+                <div class="input-wrap">
+                    <svg class="ic">
+                        <use href="#i-hash" />
+                    </svg>
+                    <input id="chan" type="text" maxlength="30" placeholder="mis. keluarga123" autocomplete="off"
+                        autocapitalize="off" spellcheck="false">
+                </div>
+            </div>
+
+            <div id="joinErr" class="alert err hidden"></div>
+
+            <div class="field" style="margin-top:20px">
+                <button id="joinBtn" class="btn"><svg class="ic">
+                        <use href="#i-log-in" />
+                    </svg>Masuk Channel</button>
+            </div>
+
+            <div class="alert hint">
+                <svg class="ic">
+                    <use href="#i-info" />
+                </svg>
+                <span>Semua orang yang memasukkan kode channel yang sama akan terhubung. Pakai kode yang sulit ditebak
+                    kalau tidak ingin ada orang lain ikut masuk. Browser akan meminta izin mikrofon.</span>
+            </div>
+        </section>
+
+        <!-- Layar HT -->
+        <section id="radio" class="hidden">
+            <div class="card status">
+                <div class="status-left"><span id="dot" class="dot"></span><span id="statusTxt">Tidak ada yang
+                        berbicara</span></div>
+                <div class="badge" id="chanLabel"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-head-row">
+                    <h2 class="card-title"><svg class="ic">
+                            <use href="#i-users" />
+                        </svg>Anggota di channel</h2>
+                    <div class="head-actions">
+                        <span class="count" id="peerCount">0</span>
+                        <div class="dropdown">
+                            <button type="button" class="sbtn sm" aria-haspopup="menu" aria-expanded="false"><svg
+                                    class="ic">
+                                    <use href="#i-share-2" />
+                                </svg>Bagikan</button>
+                            <div class="menu hidden" role="menu">
+                                <div class="menu-label">Bagikan channel ke</div>
+                                <button type="button" class="menu-item" role="menuitem" data-share="wa"><svg class="ic">
+                                        <use href="#i-message-circle" />
+                                    </svg>WhatsApp</button>
+                                <button type="button" class="menu-item" role="menuitem" data-share="tg"><svg class="ic">
+                                        <use href="#i-send" />
+                                    </svg>Telegram</button>
+                                <button type="button" class="menu-item" role="menuitem" data-share="mail"><svg
+                                        class="ic">
+                                        <use href="#i-mail" />
+                                    </svg>Email</button>
+                                <button type="button" class="menu-item hidden" role="menuitem" id="shareNative"
+                                    data-share="native"><svg class="ic">
+                                        <use href="#i-share-2" />
+                                    </svg>Aplikasi lain…</button>
+                                <div class="menu-sep"></div>
+                                <button type="button" class="menu-item" role="menuitem" data-share="copy"><svg
+                                        class="ic">
+                                        <use id="copyIcon" href="#i-link" />
+                                    </svg><span id="copyLbl">Salin tautan</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ul id="peers" class="peers"></ul>
+                <div id="peersEmpty" class="empty">
+                    <svg class="ic">
+                        <use href="#i-users" />
+                    </svg>
+                    <span>Belum ada orang lain. Bagikan kode channel ke teman.</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="setting">
+                    <label for="vol">Volume</label>
+                    <div class="vol-row">
+                        <button id="muteBtn" type="button" class="sbtn icon sm" aria-label="Bisukan"><svg class="ic">
+                                <use id="muteIcon" href="#i-volume-2" />
+                            </svg></button>
+                        <input id="vol" type="range" min="0" max="1" step="0.05" value="1">
+                    </div>
+                </div>
+                <div class="setting">
+                    <div class="switch-row">
+                        <div>
+                            <label for="latch"><svg class="ic">
+                                    <use href="#i-lock" />
+                                </svg>Mode kunci</label>
+                            <p>Ketuk sekali untuk bicara, ketuk lagi untuk berhenti.</p>
+                        </div>
+                        <input id="latch" type="checkbox" role="switch">
+                    </div>
+                </div>
+            </div>
+
+            <div class="ptt-wrap">
+                <button id="ptt" aria-label="Tahan untuk bicara">
+                    <svg class="ic ic-idle">
+                        <use href="#i-mic" />
+                    </svg>
+                    <svg class="ic ic-talk">
+                        <use href="#i-audio-lines" />
+                    </svg>
+                    <span id="pttTxt">Tahan untuk bicara</span>
+                </button>
+                <div class="kbd-hint">atau tahan tombol <kbd>Spasi</kbd></div>
+            </div>
+        </section>
+    </div>
+
+    <div id="audios"></div>
+
+    <script type="module">
+        import { joinRoom, selfId } from 'https://esm.sh/trystero@0.21.5/torrent';
+
+        const $ = id => document.getElementById(id);
+        const APP_ID = 'web-ht-sederhana-v1';
+
+        let room = null, micStream = null, micTrack = null;
+        let peers = new Map();            // id -> {name, talking}
+        let talking = false;
+        let sendState = null;
+        let myName = '';
+        let audioCtx = null;
+        let currentChan = '';
+
+        // ----- Preferensi -----
+        try {
+            $('name').value = localStorage.getItem('ht_name') || '';
+            $('chan').value = location.hash.slice(1) ? decodeURIComponent(location.hash.slice(1)) : (localStorage.getItem('ht_chan') || '');
+        } catch { }
+
+        // ----- Bunyi "roger beep" -----
+        function beep(freq = 880, dur = 0.09) {
+            try {
+                audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+                o.frequency.value = freq; o.type = 'sine';
+                g.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.25, audioCtx.currentTime + 0.01);
+                g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+                o.connect(g).connect(audioCtx.destination);
+                o.start(); o.stop(audioCtx.currentTime + dur + 0.02);
+            } catch { }
+        }
+
+        // ----- UI -----
+        function renderPeers() {
+            const ul = $('peers'); ul.innerHTML = '';
+            peers.forEach((p, id) => {
+                const label = p.name || ('Anggota ' + id.slice(0, 4));
+                const li = document.createElement('li');
+                if (p.talking) li.classList.add('speaking');
+
+                const av = document.createElement('span');
+                av.className = 'avatar';
+                av.textContent = label.trim().charAt(0);
+                li.appendChild(av);
+
+                const n = document.createElement('span');
+                n.className = 'name';
+                n.textContent = label;
+                li.appendChild(n);
+
+                if (p.talking) {
+                    const t = document.createElement('span');
+                    t.className = 'tag';
+                    t.innerHTML = '<svg class="ic"><use href="#i-audio-lines"/></svg>Bicara';
+                    li.appendChild(t);
+                }
+                ul.appendChild(li);
+            });
+            $('peersEmpty').classList.toggle('hidden', peers.size > 0);
+            $('peerCount').textContent = peers.size;
+            const anyRx = [...peers.values()].some(p => p.talking);
+            $('ptt').classList.toggle('rx', anyRx && !talking);
+            const speakers = [];
+            if (talking) speakers.push('Kamu');
+            peers.forEach((p, id) => { if (p.talking) speakers.push(p.name || ('Anggota ' + id.slice(0, 4))); });
+            $('statusTxt').textContent = speakers.length
+                ? speakers.join(', ') + ' sedang berbicara'
+                : 'Tidak ada yang berbicara';
+            $('dot').classList.toggle('on', speakers.length > 0);
+            $('dot').classList.toggle('me', talking);
+        }
+
+        function showJoinError(msg) {
+            const e = $('joinErr');
+            e.innerHTML = '<svg class="ic"><use href="#i-circle-alert"/></svg>';
+            const s = document.createElement('span'); s.textContent = msg; e.appendChild(s);
+            e.classList.remove('hidden');
+        }
+
+        // ----- Masuk channel -----
+        $('joinBtn').addEventListener('click', async () => {
+            $('joinErr').classList.add('hidden');
+            const chan = $('chan').value.trim().toLowerCase().replace(/\s+/g, '-');
+            if (!chan) return showJoinError('Isi kode channel dulu.');
+            myName = $('name').value.trim();
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia)
+                return showJoinError('Browser tidak mendukung mikrofon, atau halaman tidak dibuka lewat HTTPS.');
+
+            try {
+                micStream = await navigator.mediaDevices.getUserMedia({
+                    audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+                    video: false
+                });
+            } catch (e) {
+                return showJoinError('Izin mikrofon ditolak. Aktifkan izin mikrofon untuk situs ini lalu coba lagi.');
+            }
+            micTrack = micStream.getAudioTracks()[0];
+            micTrack.enabled = false; // mati sampai tombol ditekan
+
+            try { localStorage.setItem('ht_name', myName); localStorage.setItem('ht_chan', chan); } catch { }
+            history.replaceState(null, '', '#' + encodeURIComponent(chan));
+
+            audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            startRoom(chan);
+        });
+
+        function startRoom(chan) {
+            room = joinRoom({ appId: APP_ID }, chan);
+            const [send, onState] = room.makeAction('state');
+            sendState = send;
+
+            $('chanLabel').textContent = '#' + chan;
+            currentChan = chan;
+            $('leaveBtn').classList.remove('hidden');
+            $('join').classList.add('hidden');
+            $('radio').classList.remove('hidden');
+            peers.clear(); renderPeers();
+
+            room.onPeerJoin(id => {
+                peers.set(id, { name: '', talking: false });
+                room.addStream(micStream, id);          // kirim mic (dalam keadaan mute) ke anggota baru
+                sendState({ name: myName, talking }, id);
+                renderPeers();
+            });
+
+            room.onPeerLeave(id => {
+                peers.delete(id);
+                const el = document.getElementById('a-' + id);
+                if (el) el.remove();
+                renderPeers();
+            });
+
+            room.onPeerStream((stream, id) => {
+                let el = document.getElementById('a-' + id);
+                if (!el) {
+                    el = document.createElement('audio');
+                    el.id = 'a-' + id; el.autoplay = true; el.playsInline = true;
+                    $('audios').appendChild(el);
+                }
+                el.srcObject = stream;
+                el.volume = parseFloat($('vol').value);
+                el.play().catch(() => { });
+            });
+
+            onState((data, id) => {
+                const p = peers.get(id) || { name: '', talking: false };
+                const was = p.talking;
+                p.name = (data && data.name) || p.name;
+                p.talking = !!(data && data.talking);
+                peers.set(id, p);
+                if (!was && p.talking) beep(660, 0.07);
+                if (was && !p.talking) beep(990, 0.07);
+                renderPeers();
+            });
+        }
+
+        // ----- Push to talk -----
+        function setTalking(on) {
+            if (!room || on === talking) return;
+            talking = on;
+            micTrack.enabled = on;
+            $('ptt').classList.toggle('talking', on);
+            $('pttTxt').textContent = on ? 'Berbicara…' : 'Tahan untuk bicara';
+            sendState({ name: myName, talking: on });
+            if (on) beep(1200, 0.06); else beep(800, 0.06);
+            renderPeers();
+        }
+
+        const ptt = $('ptt');
+        let pointerDown = false;
+        ptt.addEventListener('pointerdown', e => {
+            e.preventDefault();
+            if ($('latch').checked) { setTalking(!talking); return; }
+            pointerDown = true; ptt.setPointerCapture(e.pointerId); setTalking(true);
+        });
+        const release = e => {
+            if ($('latch').checked || !pointerDown) return;
+            pointerDown = false; setTalking(false);
+        };
+        ptt.addEventListener('pointerup', release);
+        ptt.addEventListener('pointercancel', release);
+        ptt.addEventListener('contextmenu', e => e.preventDefault());
+
+        window.addEventListener('keydown', e => {
+            if (e.code !== 'Space' || e.repeat || !room) return;
+            if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
+            e.preventDefault();
+            if ($('latch').checked) setTalking(!talking); else setTalking(true);
+        });
+        window.addEventListener('keyup', e => {
+            if (e.code !== 'Space' || !room) return;
+            if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
+            e.preventDefault();
+            if ($('latch').checked) return;
+            setTalking(false);
+        });
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && !$('latch').checked) setTalking(false);
+        });
+
+        // ----- Volume & bisu -----
+        let lastVol = 1;
+        function applyVol() {
+            const v = parseFloat($('vol').value);
+            document.querySelectorAll('#audios audio').forEach(a => a.volume = v);
+            $('muteIcon').setAttribute('href', v === 0 ? '#i-volume-x' : v < 0.5 ? '#i-volume-1' : '#i-volume-2');
+            $('muteBtn').setAttribute('aria-label', v === 0 ? 'Aktifkan suara' : 'Bisukan');
+        }
+        $('vol').addEventListener('input', () => {
+            const v = parseFloat($('vol').value);
+            if (v > 0) lastVol = v;
+            applyVol();
+        });
+        $('muteBtn').addEventListener('click', () => {
+            const v = parseFloat($('vol').value);
+            if (v > 0) { lastVol = v; $('vol').value = 0; }
+            else { $('vol').value = lastVol || 1; }
+            applyVol();
+        });
+
+        // ----- Keluar -----
+        $('leaveBtn').addEventListener('click', () => {
+            setTalking(false);
+            if (room) room.leave();
+            room = null;
+            if (micStream) micStream.getTracks().forEach(t => t.stop());
+            micStream = micTrack = null;
+            $('audios').innerHTML = '';
+            peers.clear();
+            $('radio').classList.add('hidden');
+            $('leaveBtn').classList.add('hidden');
+            closeMenus();
+            currentChan = '';
+            $('join').classList.remove('hidden');
+        });
+        window.addEventListener('beforeunload', () => { if (room) room.leave(); });
+
+        // ----- Dropdown -----
+        function closeMenus(except) {
+            document.querySelectorAll('.menu').forEach(m => {
+                if (m === except) return;
+                m.classList.add('hidden');
+                m.previousElementSibling.setAttribute('aria-expanded', 'false');
+            });
+        }
+        document.querySelectorAll('.dropdown > [aria-haspopup]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const m = btn.nextElementSibling;
+                const open = m.classList.contains('hidden');
+                closeMenus(m);
+                m.classList.toggle('hidden', !open);
+                btn.setAttribute('aria-expanded', String(open));
+            });
+        });
+        document.addEventListener('click', e => { if (!e.target.closest('.dropdown')) closeMenus(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenus(); });
+
+        // ----- Tema (terang / gelap / sistem) -----
+        const THEME_KEY = 'ht_theme';
+        const darkMq = window.matchMedia('(prefers-color-scheme: dark)');
+        function getThemePref() {
+            try { return localStorage.getItem(THEME_KEY) || 'system'; } catch { return 'system'; }
+        }
+        function applyTheme(pref) {
+            const root = document.documentElement;
+            if (pref === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', pref);
+            const dark = pref === 'dark' || (pref === 'system' && darkMq.matches);
+            $('themeIcon').setAttribute('href', dark ? '#i-moon' : '#i-sun');
+            document.querySelector('meta[name=theme-color]').setAttribute('content', dark ? '#09090b' : '#ffffff');
+            document.querySelectorAll('[data-theme-opt]').forEach(b =>
+                b.querySelector('.check').classList.toggle('invisible', b.dataset.themeOpt !== pref));
+        }
+        document.querySelectorAll('[data-theme-opt]').forEach(b => b.addEventListener('click', () => {
+            const pref = b.dataset.themeOpt;
+            try { localStorage.setItem(THEME_KEY, pref); } catch { }
+            applyTheme(pref);
+            closeMenus();
+        }));
+        darkMq.addEventListener('change', () => { if (getThemePref() === 'system') applyTheme('system'); });
+        applyTheme(getThemePref());
+
+        // ----- Bagikan channel -----
+        if (navigator.share) $('shareNative').classList.remove('hidden');
+        const shareUrl = () => location.href.split('#')[0] + '#' + encodeURIComponent(currentChan);
+        const shareText = () => `Gabung channel HT "${currentChan}" yuk:`;
+
+        async function copyText(t) {
+            try { await navigator.clipboard.writeText(t); return true; }
+            catch {
+                const ta = document.createElement('textarea');
+                ta.value = t; ta.style.cssText = 'position:fixed;opacity:0';
+                document.body.appendChild(ta); ta.select();
+                let ok = false; try { ok = document.execCommand('copy'); } catch { }
+                ta.remove(); return ok;
+            }
+        }
+
+        document.querySelectorAll('[data-share]').forEach(b => b.addEventListener('click', async () => {
+            const kind = b.dataset.share, url = shareUrl(), text = shareText();
+            if (kind === 'copy') {
+                const ok = await copyText(url);
+                $('copyLbl').textContent = ok ? 'Tersalin!' : 'Gagal menyalin';
+                $('copyIcon').setAttribute('href', ok ? '#i-check' : '#i-link');
+                setTimeout(() => {
+                    closeMenus();
+                    $('copyLbl').textContent = 'Salin tautan';
+                    $('copyIcon').setAttribute('href', '#i-link');
+                }, 1100);
+                return;
+            }
+            closeMenus();
+            if (kind === 'native') { try { await navigator.share({ title: 'Web HT', text, url }); } catch { } return; }
+            if (kind === 'wa') window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank', 'noopener');
+            if (kind === 'tg') window.open('https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text), '_blank', 'noopener');
+            if (kind === 'mail') location.href = 'mailto:?subject=' + encodeURIComponent('Undangan channel Web HT') + '&body=' + encodeURIComponent(text + '\n' + url);
+        }));
+    </script>
+</body>
+
+</html>
